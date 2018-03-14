@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+
 public class Server implements Runnable {
 
 	// actual server
@@ -44,12 +45,50 @@ public class Server implements Runnable {
 			
 			// end user information for proper using the server. 
 			System.out.println("Usage: java -cp WebServer.jar web.Server <port> <web root> <threads limit>\n");
-		else {
+		else if (args.length == 3) {
+			
+			// checks the command-line arguments with regular expressions
+			
+			// checks the port number
+			if (!args[0].matches("^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$")) {
+				System.err.println("Error: invailde port number!");
+				System.exit(1);
+			}
+			
+			// checks the working directory for the server
+			if (!args[1].matches("^(.+)/?([^/]+)$")) {
+				System.err.println("Error: invalide working directory for the server!");
+				System.exit(1);
+			}
+			
+			// checks the number of max Threads
+			try {
+				int number = Integer.parseInt(args[2]);
+				if (number < 1) {
+					
+					// goes to the catch block.
+					throw new NumberFormatException(); 
+				}
+				
+				// using the given command-line argument.
+				maxThreads = number;
+			}
+			catch (NumberFormatException e) {
+				System.err.println("Error: invalide number of max. threads!");
+				System.exit(1);
+			}
 			
 			// using of the command line arguments.
 			port = Integer.parseInt(args[0]);
 			webRoot = args[1];
-			maxThreads = Integer.parseInt(args[2]);
+		} else { // error case 
+			
+			// end user informations.
+			System.err.println("Please give a proper number of arguments");
+			System.err.println("Use -h or -help for more informations.");
+			System.err.println("You can use the server with none arguments under"
+					+ " localhost:8080");
+			System.exit(1);
 		}
 		
 		// instantiates a main-thread and given a object of type Server.
