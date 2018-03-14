@@ -12,3 +12,20 @@ A multi-threaded (e.g. file-based) web server with thread-pooling implemented in
 - I changes only the **.java**-files and the binaries **.class** files and the **.jar** file.     
 
 ---
+
+## Usage 
+
+You simply type in the console:  
+
+```sh
+./WebServer.jar
+```
+
+This starts the web server under [http://localhost:8080](http://localhost:8080).  
+In addition you can given some command-line arguments:  
+
+```sh
+./WebServer.jar <port> <working-directory> <max number of threads>
+```
+
+It must be three arguments in the order above.  
