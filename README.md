@@ -21,7 +21,7 @@ You simply type in the console:
 ./WebServer.jar
 ```
 
-This starts the web server under [http://localhost:8080](http://localhost:8080).  
+This starts the web server under [http://localhost:8080](http://localhost:8080) with working-directory **wwwroot**.  
 In addition you can given some command-line arguments:  
 
 ```sh
