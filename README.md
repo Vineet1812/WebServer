@@ -9,5 +9,6 @@ A multi-threaded (e.g. file-based) web server with thread-pooling implemented in
 - Documented the code.  
 - Created a license (MIT-license)  
 - Verification of the command-line arguments in the main(...)-method. Checks whether the command-line arguments are in the proper form. Otherwise it raise a certain error-message.  
+- I changes only the **.java**-files and the binaries **.class** files. Not the **jar-** file.   
 
 ---
