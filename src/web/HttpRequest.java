@@ -60,6 +60,11 @@ public class HttpRequest {
 		return null;
 	}
 
+	
+	/*
+	 *  getter methods
+	 */
+	
 	public String getMethod() {
 		return method;
 	}
@@ -68,6 +73,12 @@ public class HttpRequest {
 		return url;
 	}
 	
+	// -- end getter methods ---
+	
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		String result = method + " " + url + " " + protocol + "\n";
@@ -81,6 +92,9 @@ public class HttpRequest {
 		return result;
 	}
 	
+	/*
+	 * inert class for string constants
+	 */
 	public static class HttpMethod {
 		public static final String GET = "GET";
 		public static final String HEAD = "HEAD";
