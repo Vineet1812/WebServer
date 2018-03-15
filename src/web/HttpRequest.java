@@ -14,10 +14,16 @@ public class HttpRequest {
 	private String method;
 	private String url;
 	private String protocol;
-	private NavigableMap<String, String> headers = new TreeMap<String, String>();
-	private List<String> body = new ArrayList<String>();
+	private NavigableMap<String, String> headers;
+	private List<String> body;
 
-	private HttpRequest() {}
+	/*
+	 * simple constructor for initializes the fields
+	 */
+	private HttpRequest() {
+		body = new ArrayList<String>();
+		headers = new TreeMap<String, String>();
+	}
 
 	public static HttpRequest parseAsHttp(InputStream in) {
 		try {
@@ -34,6 +40,8 @@ public class HttpRequest {
 			if (!requestLine[2].startsWith("HTTP/")) {
 				throw new IOException("Server accepts only HTTP requests.");
 			}
+			
+			//TODO checks the various tokens
 			request.method = requestLine[0];
 			request.url = requestLine[1];
 			request.protocol = requestLine[2];
