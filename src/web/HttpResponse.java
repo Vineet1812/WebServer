@@ -57,7 +57,8 @@ public class HttpResponse {
 		} else { // error case if the given file is not a file.
 			// if the given file is not available!
 			return new HttpResponse(StatusCode.NOT_FOUND)
-				.withHtmlBody("<html><body>File " + f + " not found.</body></html>");
+				.withHtmlBody("<html><head><title>Error message</title>"
+						+ "</head><body>File " + f + " not found.</body></html>");
 		}
 	}
 
@@ -111,6 +112,8 @@ public class HttpResponse {
 			result += key + ": " + headers.get(key) + "\n";
 		}
 		result += "\r\n";
+		
+		// make sure body is are valid object
 		if (body != null) {
 			result += new String(body);
 		}
