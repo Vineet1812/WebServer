@@ -11,6 +11,7 @@ A multi-threaded (e.g. file-based) web server with thread-pooling implemented in
 - Changed the **README.md**  
 - Verification of the command-line arguments in the main(...)-method. Checks whether the command-line arguments are in the proper form. Otherwise it raise a certain error-message.  
 - Changed the close()-method in the Server-class. For shutdown the thread pool with a while-loop.  
+- Created a useful constructor in the class HttpRequest.  
 - I changes only the **.java**-files and the binaries **.class** files and the **.jar** file.     
 
 ---
