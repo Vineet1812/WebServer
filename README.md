@@ -13,13 +13,19 @@ A multi-threaded (e.g. file-based) web server with thread-pooling implemented in
 - Changed the close()-method in the Server-class. For shutdown the thread pool with a while-loop.  
 - Created a useful constructor in the class HttpRequest.  
 - **Added a simple GUI for controlling the server.**  
+- Added a new **.jar** file called ```WebServerGUI.jar```  
 - I changes only the **.java**-files and the binaries **.class** files and the **.jar** file.     
 
 ---
 
-## Usage 
+## Usage of the console server
 
 You simply type in the console:  
+
+```sh
+chmod +x WebServer.jar
+```
+after that  
 
 ```sh
 ./WebServer.jar
@@ -33,3 +39,19 @@ In addition you can given some command-line arguments:
 ```
 
 It must be three arguments in the order above.  
+
+## Using of the gui server  
+
+You simply type in the console:  
+
+```sh
+chmod +x WebServerGUI.jar
+```
+
+after that  
+
+```sh
+./WebServerGUI.jar
+```
+
+This starts the GUI for the webserver. (Swing-GUI)  
