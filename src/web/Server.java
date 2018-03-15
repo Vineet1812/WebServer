@@ -162,9 +162,16 @@ public class Server implements Runnable {
 		try {
 			
 			// makes sure that after ten seconds the executor service is down.
-			if (!threadsPool.awaitTermination(10, TimeUnit.SECONDS)) 
-				threadsPool.shutdownNow(); // otherwise send new shutdown-command.
-		} catch (InterruptedException e) {} // error case at the moment empty. 
+//			if (!threadsPool.awaitTermination(10, TimeUnit.SECONDS)) 
+//				threadsPool.shutdownNow(); // otherwise send new shutdown-command.
+			
+			// makes sure that after ten seconds the executor service is down.
+			while(!threadsPool.awaitTermination(10, TimeUnit.SECONDS)) {
+				threadsPool.shutdownNow();
+			}
+		} catch (InterruptedException e) {
+			System.err.println("close: error by closing the threads pool");
+		} // error case at the moment empty. 
 	}
 
 	/*
