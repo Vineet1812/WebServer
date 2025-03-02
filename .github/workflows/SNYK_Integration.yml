@@ -50,13 +50,25 @@ jobs:
         run: snyk auth $SNYK_TOKEN
 
       - name: Run Snyk to check for vulnerabilities in WebServer.jar
-        run: snyk test --scan-unmanaged --file=WebServer.jar
+        continue-on-error: true
+        run: snyk test --scan-unmanaged --file=WebServer.jar --json > snyk-report.json
 
       - name: Run Snyk to check for vulnerabilities in WebServerGUI.jar
-        run: snyk test --scan-unmanaged --file=WebServerGUI.jar
+        continue-on-error: true
+        run: snyk test --scan-unmanaged --file=WebServerGUI.jar --json > snyk-report-gui.json
 
-        # Push the Snyk Code results into GitHub Code Scanning tab
-     # - name: Upload result to GitHub Code Scanning
-     #   uses: github/codeql-action/upload-sarif@v3
-     #   with:
-     #     sarif_file: snyk-code.sarif
+      - name: Convert Snyk report to SARIF format
+        run: snyk-to-sarif snyk-report.json > snyk-report.sarif
+
+      - name: Convert Snyk GUI report to SARIF format
+        run: snyk-to-sarif snyk-report-gui.json > snyk-report-gui.sarif
+
+      - name: Upload SARIF file for WebServer.jar
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk-report.sarif
+
+      - name: Upload SARIF file for WebServerGUI.jar
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk-report-gui.sarif
