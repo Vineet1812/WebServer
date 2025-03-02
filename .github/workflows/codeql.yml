@@ -16,8 +16,6 @@ on:
     branches: [ "Security_branch" ]
   pull_request:
     branches: [ "Security_branch" ]
-  schedule:
-    - cron: '28 18 * * 1'
 
 jobs:
   analyze:
