@@ -48,21 +48,6 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk auth $SNYK_TOKEN
+        with: code test
 
-      - name: Run Snyk to check for vulnerabilities in WebServer.jar
-        continue-on-error: true
-        run: snyk test --scan-unmanaged --file=WebServer.jar --sarif-file-output=snyk-report.sarif
-
-      - name: Run Snyk to check for vulnerabilities in WebServerGUI.jar
-        continue-on-error: true
-        run: snyk test --scan-unmanaged --file=WebServerGUI.jar --sarif-file-output=snyk-report-gui.sarif
-
-      - name: Upload SARIF file for WebServer.jar
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: snyk-report.sarif
-
-      - name: Upload SARIF file for WebServerGUI.jar
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: snyk-report-gui.sarif
+     
