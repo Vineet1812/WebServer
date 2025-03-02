@@ -49,8 +49,11 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk auth $SNYK_TOKEN
 
-      - name: Run Snyk to check for vulnerabilities
-        run: snyk test --all-projects
+      - name: Run Snyk to check for vulnerabilities in WebServer.jar
+        run: snyk test --scan-unmanaged --file=WebServer.jar
+
+      - name: Run Snyk to check for vulnerabilities in WebServerGUI.jar
+        run: snyk test --scan-unmanaged --file=WebServerGUI.jar
 
         # Push the Snyk Code results into GitHub Code Scanning tab
       - name: Upload result to GitHub Code Scanning
