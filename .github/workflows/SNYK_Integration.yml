@@ -51,17 +51,11 @@ jobs:
 
       - name: Run Snyk to check for vulnerabilities in WebServer.jar
         continue-on-error: true
-        run: snyk test --scan-unmanaged --file=WebServer.jar --json > snyk-report.json
+        run: snyk test --scan-unmanaged --file=WebServer.jar --sarif-file-output=snyk-report.sarif
 
       - name: Run Snyk to check for vulnerabilities in WebServerGUI.jar
         continue-on-error: true
-        run: snyk test --scan-unmanaged --file=WebServerGUI.jar --json > snyk-report-gui.json
-
-      - name: Convert Snyk report to SARIF format
-        run: snyk-to-sarif snyk-report.json > snyk-report.sarif
-
-      - name: Convert Snyk GUI report to SARIF format
-        run: snyk-to-sarif snyk-report-gui.json > snyk-report-gui.sarif
+        run: snyk test --scan-unmanaged --file=WebServerGUI.jar --sarif-file-output=snyk-report-gui.sarif
 
       - name: Upload SARIF file for WebServer.jar
         uses: github/codeql-action/upload-sarif@v1
