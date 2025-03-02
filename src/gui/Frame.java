@@ -101,6 +101,11 @@ public class Frame {
 						int port = Integer.parseInt(inputPort.getText());
 						int maxThreads = Integer.parseInt(inputThreads.getText());
 						String webRoot = inputDirectory.getText();
+
+						// Vulnerability: Hardcoded credentials
+				                    String username = "admin";
+				                    String password = "password123";
+
 						
 						thread = new Thread(new Server(port, webRoot, maxThreads));
 						thread.start();
