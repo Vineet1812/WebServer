@@ -43,23 +43,37 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
 
-    # Initialize CodeQL
+    # Initialize CodeQL without requiring an external config file
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         queries: security-extended,security-and-quality  # Use extended security queries
-        config-file: ./.github/codeql/codeql-config.yml  # Optional custom config
+        # Inline config instead of using external file
+        config: |
+          paths:
+            - "**/*.java"
+            - "**/*.html"
+            - "**/*.js"
+
+          paths-ignore:
+            - "**/test/**"
+            - "**/*.md"
+            - ".github/workflows/**"
+          disable-default-queries: false
 
     # Add custom build steps for Java if needed
     - name: Build Java (if needed)
       if: matrix.language == 'java'
       run: |
         # Find all Java files and compile them
-        find . -name "*.java" > sources.txt
-        if [ -s sources.txt ]; then
-          mkdir -p target/classes
-          javac -d target/classes @sources.txt || echo "Some Java files may have compilation issues, but continuing scan"
+        mkdir -p target/classes
+        java_files=$(find . -name "*.java" | grep -v "/test/")
+        if [ -n "$java_files" ]; then
+          echo "$java_files" > sources.txt
+          javac -d target/classes @sources.txt || echo "Compilation had issues, continuing with scan"
+        else
+          echo "No Java files found to compile"
         fi
 
     # Perform the CodeQL Analysis
