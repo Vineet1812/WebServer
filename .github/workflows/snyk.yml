@@ -18,11 +18,15 @@
 
 name: Snyk Security Scan
 
+#on:
+ # push:
+ #  branches: ["Security_branch"]
+  #pull_request:
+   # branches: ["Security_branch"]
+   
 on:
-  push:
-    branches: ["Security_branch"]
-  pull_request:
-    branches: ["Security_branch"]
+  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
