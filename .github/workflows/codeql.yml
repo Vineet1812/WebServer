@@ -78,7 +78,7 @@ jobs:
 
     # Perform the CodeQL Analysis
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{ matrix.language }}"
         upload: true  # Ensure results are uploaded to GitHub Security
