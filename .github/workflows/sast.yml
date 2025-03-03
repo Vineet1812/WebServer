@@ -57,7 +57,7 @@ jobs:
           path: ~/.m2/**/*.jar
           key: ${{ runner.os }}-m2
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: target
           path: ${{github.workspace}}/target
@@ -85,7 +85,7 @@ jobs:
         dependenciesPath: ~/.m2
         basePath: src/main/java
     - name: Upload SpotBugs report
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: spotbugs.sarif
         path: ${{github.workspace}}/results.sarif
@@ -123,7 +123,7 @@ jobs:
            # Uncomment SEMGREP_TIMEOUT to set this job's timeout (in seconds): Default timeout is 1800 seconds (30 minutes). 0=disable
            # SEMGREP_TIMEOUT: 300
       - name: Upload Semgrep Report
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: semgrep.sarif
