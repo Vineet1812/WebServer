@@ -52,7 +52,7 @@ jobs:
           allow_issue_writing: true
 
       - name: Upload html report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: DAST_Report.html
           path: report_html.html
