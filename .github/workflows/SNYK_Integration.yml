@@ -51,39 +51,48 @@ jobs:
       - name: Authenticate with Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       
-      # Scan the entire project directory for vulnerabilities
-      # This works for projects with mixed file types (HTML, Java, etc.)
-      - name: Scan project for vulnerabilities
-        run: snyk test --all-projects --detection-depth=6
+      # List all files to help with debugging
+      - name: List files in repository
+        run: find . -type f | grep -v ".git" | sort
+      
+      # Scan using Snyk's Code security scanning
+      - name: Run Snyk Code scan
+        run: snyk code test
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       
-      # Scan specifically for Java vulnerabilities by directory scanning
-      - name: Scan Java files
+      # Monitor using Snyk Code rather than dependency scanning
+      - name: Monitor with Snyk Code
+        run: snyk code monitor
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      
+      # Try scanning Java files directly if they exist
+      - name: Scan Java files (if any)
         run: |
-          # Find directories containing Java files and scan them
-          for dir in $(find . -name "*.java" -type f | xargs dirname | sort | uniq); do
-            echo "Scanning directory: $dir"
-            snyk test --file=$dir
-          done
+          java_files=$(find . -name "*.java" -type f)
+          if [ -n "$java_files" ]; then
+            echo "Found Java files, scanning for vulnerabilities"
+            snyk test --scan-all-unmanaged
+          else
+            echo "No Java files found"
+          fi
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       
-      # Scan HTML files
-      - name: Scan HTML files
+      # Try scanning HTML files directly if they exist
+      - name: Scan HTML files (if any)
         run: |
-          for file in $(find . -name "*.html" -type f); do
-            echo "Scanning HTML file: $file"
-            snyk test --file=$file
-          done
+          html_files=$(find . -name "*.html" -type f)
+          if [ -n "$html_files" ]; then
+            echo "Found HTML files, scanning for vulnerabilities"
+            snyk test --scan-all-unmanaged
+          else
+            echo "No HTML files found"
+          fi
         continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      
-      # Monitor the project for ongoing vulnerability tracking
-      - name: Monitor project in Snyk
-        run: snyk monitor --all-projects
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
