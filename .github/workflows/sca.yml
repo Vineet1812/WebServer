@@ -3,9 +3,9 @@ name: 20 SCA
 
 on:
   push:
-    branches: [ "Security_branch" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "Security_branch" ]
+    branches: [ "master" ]
 
 jobs:
   sca:
