@@ -1,32 +1,12 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# A sample workflow which sets up Snyk to analyze the full Snyk platform (Snyk Open Source, Snyk Code,
-# Snyk Container and Snyk Infrastructure as Code)
-# The setup installs the Snyk CLI - for more details on the possible commands
-# check https://docs.snyk.io/snyk-cli/cli-reference
-# The results of Snyk Code are then uploaded to GitHub Security Code Scanning
-#
-# In order to use the Snyk Action you will need to have a Snyk API token.
-# More details in https://github.com/snyk/actions#getting-your-snyk-token
-# or you can signup for free at https://snyk.io/login
-#
-# For more examples, including how to limit scans to only high-severity issues
-# and fail PR checks, see https://github.com/snyk/actions/
-
 name: Snyk Security Scan
-
 on:
   push:
     branches: ["Security_branch"]
   pull_request:
     branches: ["Security_branch"]
-
 permissions:
   contents: read
-
+  security-events: write  # Required for uploading SARIF results
 jobs:
   snyk-security-scan:
     runs-on: ubuntu-latest
@@ -55,44 +35,67 @@ jobs:
       - name: List files in repository
         run: find . -type f | grep -v ".git" | sort
       
-      # Scan using Snyk's Code security scanning
+      # Scan using Snyk's Code security scanning and output SARIF for GitHub
       - name: Run Snyk Code scan
-        run: snyk code test
+        run: snyk code test --sarif > snyk-code.sarif
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       
-      # Monitor using Snyk Code rather than dependency scanning
+      # Upload Snyk Code results to GitHub Security
+      - name: Upload Snyk Code SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-code.sarif
+          category: snyk-code
+      
+      # Monitor using Snyk Code
       - name: Monitor with Snyk Code
         run: snyk code monitor
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       
-      # Try scanning Java files directly if they exist
+      # Scan Java files and generate SARIF
       - name: Scan Java files (if any)
         run: |
           java_files=$(find . -name "*.java" -type f)
           if [ -n "$java_files" ]; then
             echo "Found Java files, scanning for vulnerabilities"
-            snyk test --scan-all-unmanaged
+            snyk test --scan-all-unmanaged --sarif > snyk-java.sarif
           else
             echo "No Java files found"
+            echo '{"runs":[]}' > snyk-java.sarif
           fi
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       
-      # Try scanning HTML files directly if they exist
+      # Upload Java scan results to GitHub Security
+      - name: Upload Java scan SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-java.sarif
+          category: snyk-java
+      
+      # Scan HTML files and generate SARIF
       - name: Scan HTML files (if any)
         run: |
           html_files=$(find . -name "*.html" -type f)
           if [ -n "$html_files" ]; then
             echo "Found HTML files, scanning for vulnerabilities"
-            snyk test --scan-all-unmanaged
+            snyk test --scan-all-unmanaged --sarif > snyk-html.sarif
           else
             echo "No HTML files found"
+            echo '{"runs":[]}' > snyk-html.sarif
           fi
         continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      
+      # Upload HTML scan results to GitHub Security
+      - name: Upload HTML scan SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: snyk-html.sarif
+          category: snyk-html
