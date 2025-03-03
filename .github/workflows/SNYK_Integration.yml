@@ -16,9 +16,6 @@
 # For more examples, including how to limit scans to only high-severity issues
 # and fail PR checks, see https://github.com/snyk/actions/
 
-
-         
-       
 name: Snyk Security Scan
 
 on:
@@ -42,7 +39,6 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-          cache: 'maven'
       
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -55,27 +51,39 @@ jobs:
       - name: Authenticate with Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       
-      # Scan HTML files
-      - name: Run Snyk on HTML files
-        run: snyk test --all-projects
+      # Scan the entire project directory for vulnerabilities
+      # This works for projects with mixed file types (HTML, Java, etc.)
+      - name: Scan project for vulnerabilities
+        run: snyk test --all-projects --detection-depth=6
         continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       
-      # Scan Java files specifically
-      - name: Run Snyk on Java files
+      # Scan specifically for Java vulnerabilities by directory scanning
+      - name: Scan Java files
         run: |
-          if [ -f pom.xml ]; then
-            snyk test --file=pom.xml
-          elif [ -f build.gradle ]; then
-            snyk test --file=build.gradle
-          else
-            echo "No standard Java build file found, scanning Java files directly"
-            find . -name "*.java" | xargs snyk test --skip-unresolved
-          fi
+          # Find directories containing Java files and scan them
+          for dir in $(find . -name "*.java" -type f | xargs dirname | sort | uniq); do
+            echo "Scanning directory: $dir"
+            snyk test --file=$dir
+          done
         continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       
-      # Generate and upload security report
-      - name: Generate Snyk report
+      # Scan HTML files
+      - name: Scan HTML files
+        run: |
+          for file in $(find . -name "*.html" -type f); do
+            echo "Scanning HTML file: $file"
+            snyk test --file=$file
+          done
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      
+      # Monitor the project for ongoing vulnerability tracking
+      - name: Monitor project in Snyk
         run: snyk monitor --all-projects
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-     
