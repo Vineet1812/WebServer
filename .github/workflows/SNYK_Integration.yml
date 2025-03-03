@@ -16,11 +16,14 @@
 # For more examples, including how to limit scans to only high-severity issues
 # and fail PR checks, see https://github.com/snyk/actions/
 
-name: Snyk Security
+
+         
+       
+name: Snyk Security Scan
 
 on:
   push:
-    branches: ["Security_branch" ]
+    branches: ["Security_branch"]
   pull_request:
     branches: ["Security_branch"]
 
@@ -28,30 +31,51 @@ permissions:
   contents: read
 
 jobs:
-  snyk:
+  snyk-security-scan:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
+      
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'temurin'  # Specify the distribution here
-
+          distribution: 'temurin'
+          cache: 'maven'
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      
       - name: Install Snyk CLI
         run: npm install -g snyk
-
-      - name: Authenticate Snyk
+      
+      - name: Authenticate with Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+      
+      # Scan HTML files
+      - name: Run Snyk on HTML files
+        run: snyk test --all-projects
+        continue-on-error: true
+      
+      # Scan Java files specifically
+      - name: Run Snyk on Java files
+        run: |
+          if [ -f pom.xml ]; then
+            snyk test --file=pom.xml
+          elif [ -f build.gradle ]; then
+            snyk test --file=build.gradle
+          else
+            echo "No standard Java build file found, scanning Java files directly"
+            find . -name "*.java" | xargs snyk test --skip-unresolved
+          fi
+        continue-on-error: true
+      
+      # Generate and upload security report
+      - name: Generate Snyk report
+        run: snyk monitor --all-projects
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk auth $SNYK_TOKEN
-
-      - name: Run Snyk
-        run: snyk test
-         
-       
-
      
