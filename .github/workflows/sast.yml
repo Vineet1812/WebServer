@@ -3,9 +3,9 @@ name: SAST
 
 on:
   push:
-    branches: [ "Security_branch" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "Security_branch" ]
+    branches: [ "master" ]
 
 jobs:
   SAST-CodeQL:
