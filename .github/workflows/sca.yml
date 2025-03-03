@@ -13,8 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ "ubuntu-20.04" ] # [ "macos-latest", "windows-latest", "ubuntu-20.04" ]
-        # Test once with explicit manifest_file, and once without
-        manifest_file: [ "pom.xml" ]
+        language: [ 'java', 'javascript' ]  # Add JavaScript to cover HTML/JS content
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -25,11 +24,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 11
-          cache: maven
+          
 
       - name: Install SCA tool (CRDA)
         uses: redhat-actions/openshift-tools-installer@v1
@@ -42,7 +41,6 @@ jobs:
         id: crda_scan
         uses: redhat-actions/crda@v1.2
         with:
-          manifest_file: ${{ matrix.manifest_file }}
           snyk_token: ${{ secrets.SNYK_TOKEN }}
           fail_on: never
 
