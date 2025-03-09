@@ -51,36 +51,41 @@ public class Server implements Runnable {
 			
 			// checks the port number
 			if (!args[0].matches("^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$")) {
-				System.err.println("Error: invailde port number!");
-				System.exit(1);
+			    System.err.println("Error: invailde port number!");
+			    System.exit(1);
 			}
 			
 			// checks the working directory for the server
 			if (!args[1].matches("^(.+)/?([^/]+)$")) {
-				System.err.println("Error: invalide working directory for the server!");
-				System.exit(1);
+			    System.err.println("Error: invalide working directory for the server!");
+			    System.exit(1);
 			}
 			
 			// checks the number of max Threads
 			try {
-				int number = Integer.parseInt(args[2]);
-				if (number < 1) {
-					
-					// goes to the catch block.
-					throw new NumberFormatException(); 
-				}
-				
-				// using the given command-line argument.
-				maxThreads = number;
+			    int number = Integer.parseInt(args[2]);
+			    if (number < 1) {
+			        
+			        // goes to the catch block.
+			        throw new NumberFormatException(); 
+			    }
+			    
+			    // using the given command-line argument.
+			    maxThreads = number;
 			}
 			catch (NumberFormatException e) {
-				System.err.println("Error: invalide number of max. threads!");
-				System.exit(1);
+			    System.err.println("Error: invalide number of max. threads!");
+			    System.exit(1);
 			}
 			
 			// using of the command line arguments.
-			port = Integer.parseInt(args[0]);
-			webRoot = args[1];
+			try {
+			    port = Integer.parseInt(args[0]);
+			    webRoot = args[1];
+			} catch (NumberFormatException e) {
+			    System.err.println("Error: Port must be a valid number");
+			    System.exit(1);
+			}
 		} else { // error case 
 			
 			// end user informations.
