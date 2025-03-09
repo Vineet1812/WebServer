@@ -103,8 +103,8 @@ public class Frame {
 						String webRoot = inputDirectory.getText();
 
 						// Vulnerability: Hardcoded credentials
-				                    String username = "admin";
-				                    String password = "password123";
+				                  //  String username = "admin";
+				                  //  String password = "password123";
 
 						
 						thread = new Thread(new Server(port, webRoot, maxThreads));
