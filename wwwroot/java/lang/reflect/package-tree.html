@@ -63,7 +63,13 @@ function windowTitle()
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
-    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    //document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    //updated code
+    var linkElement = document.createElement('A');
+    linkElement.href = "../../../allclasses-noframe.html";
+    linkElement.innerHTML = "<B>All Classes</B>";
+    var scriptParent = document.currentScript.parentNode;
+    scriptParent.appendChild(linkElement);
   }
   //-->
 </SCRIPT>
@@ -165,7 +171,13 @@ Interface Hierarchy
 &nbsp;<SCRIPT type="text/javascript">
   <!--
   if(window==top) {
-    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    //document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+    //updated code
+    var linkElement = document.createElement('A');
+linkElement.href = "../../../allclasses-noframe.html";
+linkElement.innerHTML = "<B>All Classes</B>";
+var scriptParent = document.currentScript.parentNode;
+scriptParent.appendChild(linkElement);
   }
   //-->
 </SCRIPT>
