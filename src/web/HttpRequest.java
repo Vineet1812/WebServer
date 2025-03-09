@@ -47,7 +47,7 @@ public class HttpRequest {
 			request.protocol = requestLine[2];
 			
 			line = reader.readLine();
-			while(line != null && !line.equals("")) {
+			while(line != null && !line.isEmpty()) {
 				String[] header = line.split(": ", 2);
 				if (header.length != 2)
 					throw new IOException("Cannot parse header from \"" + line + "\"");
