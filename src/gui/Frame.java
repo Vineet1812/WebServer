@@ -30,6 +30,7 @@ public class Frame {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Frame window = new Frame();
@@ -93,11 +94,13 @@ public class Frame {
 		// turns on/off the server.
 		btnNewButton = new JButton("on/off server");
 		btnNewButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (!status) { // turns on the server
 
 					if (inputPort.getText().length() > 0 && inputThreads.getText().length() > 0
 							&& inputDirectory.getText().length() > 0) {
+						try{
 						int port = Integer.parseInt(inputPort.getText());
 						int maxThreads = Integer.parseInt(inputThreads.getText());
 						String webRoot = inputDirectory.getText();
@@ -109,7 +112,16 @@ public class Frame {
 						
 						thread = new Thread(new Server(port, webRoot, maxThreads));
 						thread.start();
-						
+						}
+						catch (NumberFormatException e) {
+						        // Handle the exception - display an error message to the user
+						        JOptionPane.showMessageDialog(
+						            this,
+						            "Please enter valid numbers for Port and Threads.",
+						            "Input Error",
+						            JOptionPane.ERROR_MESSAGE
+						        ); //updated code
+							
 					} else { // default values for the server
 						thread = new Thread(new Server(8080, "wwwroot", 10));
 						thread.start();
@@ -130,6 +142,7 @@ public class Frame {
 
 		JButton btnNewButton_1 = new JButton("exit");
 		btnNewButton_1.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
 			}
