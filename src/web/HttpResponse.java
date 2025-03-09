@@ -37,7 +37,11 @@ public class HttpResponse {
 				FileInputStream reader = new FileInputStream(f);
 				int length = reader.available();
 				body = new byte[length];
-				reader.read(body);
+				int bytesRead = 0;
+				int offset = 0;
+				while (offset < body.length && (bytesRead = reader.read(body, offset, body.length - offset)) != -1) {
+				    offset += bytesRead;
+				}
 				reader.close();
 				
 				// updates the header of the http-response.
