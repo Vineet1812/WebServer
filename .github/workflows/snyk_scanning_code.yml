@@ -1,0 +1,61 @@
+name: Snyk Security Scan Excel
+
+on:
+  push:
+    branches: [ Security_branch ]
+  pull_request:
+    branches: [ Security_branch ]
+  
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+      
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: '3.8.6'
+      
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+      
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: --all-projects --org=${{ secrets.SNYK_ORG_ID }} --severity-threshold=high
+      
+      - name: Monitor project in Snyk
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
+          args: --all-projects --org=${{ secrets.SNYK_ORG_ID }}
+      
+      - name: Generate Snyk report
+        uses: snyk/actions/maven@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: --all-projects --org=${{ secrets.SNYK_ORG_ID }} --json > snyk-report.json
+        continue-on-error: true
+      
+      - name: Upload Snyk report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: snyk-security-report
+          path: snyk-report.json
