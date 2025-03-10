@@ -1,10 +1,18 @@
 name: Snyk Security Scan Excel
 
 on:
-  push:
-    branches: [ Security_branch ]
-  pull_request:
-    branches: [ Security_branch ]
+  workflow_dispatch:
+    # This enables the manual trigger button in GitHub UI
+    inputs:
+      scan_type:
+        description: 'Type of scan to run'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - dependencies-only
+          - code-only
   
 
 jobs:
