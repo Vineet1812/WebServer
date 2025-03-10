@@ -55,7 +55,7 @@ jobs:
         continue-on-error: true
       
       - name: Upload Snyk report as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: snyk-security-report
           path: snyk-report.json
